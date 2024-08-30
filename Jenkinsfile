@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'pip install selenium pytest pytest-html fastapi uvicorn'
+                sh 'python3 -m venv venv'
+                sh 'source venv/bin/activate && pip install --upgrade pip'
+                sh 'source venv/bin/activate && pip install selenium pytest pytest-html fastapi uvicorn'
             }
         }
         stage('Run FastAPI App') {
@@ -14,12 +16,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'pytest --html=reports/report.html'
-            }
-        }
-        stage('Publish Report') {
-            steps {
-                publishHTML([reportName: 'Test Report', reportDir: 'reports', reportFiles: 'report.html', keepAll: true])
+                sh 'source venv/bin/activate && pytest'
             }
         }
     }
